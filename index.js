@@ -1,45 +1,25 @@
-var allPages = [];
-let totalpgs = 0;
-var i;
+const axios = require('axios').default;
 
-
-
-var bby = require('bestbuy')('zuKN5cDvqHGmtnzEm86cff3f');
-
-for (i = 1; i < 8; i++){
-    bby.products('categoryPath.id=pcmcat209400050001',{show:'sku,name,salePrice,regularPrice', pageSize:30,page:i}).then(function(data){
-        //console.log(data);
-        currentPage = data["products"];
-        allPages.push(currentPage);
-        
-      
-      });
+function makeCall(path) {
+    return new Promise(function (resolve , reject) {
+        axios.get(path).then(
+            (response) => {
+                var result = response.data;
+                console.log("Processing Request...");
+                resolve(result);
+            },
+            (error) => {
+                reject(error);
+            }
+        );
+    });
 }
 
-console.log(allPages);
-
-
-
-
-
-
-/*
-for (i = 1; i < totalpgs; i++){
-    var currentPage = []
-    console.log("working on: ",i);
-    var bby = require('bestbuy')('zuKN5cDvqHGmtnzEm86cff3f');
-    bby.products('categoryPath.id=pcmcat209400050001',{show:'sku,name,salePrice,regularPrice', pageSize:30,page:i}).then(function(data){
-    currentPage = data["products"];
-    if(i != 1){
-        Array.prototype.push.apply(allPages, currentPage);
-    }else{
-        allPages = currentPage;
-    }
-    
-});
+async function main() {
+    var result = await makeCall('https://api.bestbuy.com/v1/products((categoryPath.id=abcat0401000))?apiKey=zuKN5cDvqHGmtnzEm86cff3f&sort=modelNumber.asc&show=modelNumber,name,salePrice,regularPrice&page=2&pageSize=30&format=json');
+    console.log(result.result);
+    console.log(result.Error);
 }
 
-console.log(allPages);
 
-*/
-
+main();
